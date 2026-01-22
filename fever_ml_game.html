@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fever Learning Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      text-align: center;
+      padding: 30px;
+    }
+    .box {
+      background: white;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    input {
+      padding: 8px;
+      width: 80px;
+      font-size: 16px;
+    }
+    button {
+      padding: 8px 15px;
+      margin: 5px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+    <h2>🤖 Teach the Machine: Fever Detector</h2>
+
+    <p>Temperature (°C):</p>
+    <input type="number" id="tempInput" step="0.1">
+
+    <div>
+      <button onclick="teach(true)">Has Fever</button>
+      <button onclick="teach(false)">No Fever</button>
+    </div>
+
+    <hr>
+
+    <button onclick="predict()">🔍 Test the Machine</button>
+
+    <div class="result" id="output"></div>
+  </div>
+
+<script>
+  let feverTemps = [];
+  let noFeverTemps = [];
+
+  function teach(hasFever) {
+    const temp = parseFloat(document.getElementById("tempInput").value);
+    if (isNaN(temp)) {
+      alert("Enter a temperature first!");
+      return;
+    }
+
+    if (hasFever) {
+      feverTemps.push(temp);
+      alert("Example learned: Fever");
+    } else {
+      noFeverTemps.push(temp);
+      alert("Example learned: No Fever");
+    }
+
+    document.getElementById("tempInput").value = "";
+  }
+
+  function predict() {
+    const temp = parseFloat(document.getElementById("tempInput").value);
+    if (isNaN(temp)) {
+      alert("Enter a temperature to test!");
+      return;
+    }
+
+    if (feverTemps.length === 0 || noFeverTemps.length === 0) {
+      alert("Teach me some examples first!");
+      return;
+    }
+
+    const avgFever = average(feverTemps);
+    const avgNoFever = average(noFeverTemps);
+
+    const result =
+      Math.abs(temp - avgFever) < Math.abs(temp - avgNoFever)
+      ? "🤒 Prediction: FEVER"
+      : "😊 Prediction: NO FEVER";
+
+    document.getElementById("output").innerText = result;
+  }
+
+  function average(arr) {
+    return arr.reduce((a, b) => a + b, 0) / arr.length;
+  }
+</script>
+
+</body>
+</html>
